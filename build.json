@@ -1,4 +1,10 @@
 {
+  "proxy": {
+    "/api": {
+      "enable": true,
+      "target": "http://127.0.0.1:8001"
+    }
+  },
   "plugins": [
     [
       "build-plugin-fusion",
@@ -9,9 +15,7 @@
     [
       "build-plugin-moment-locales",
       {
-        "locales": [
-          "zh-cn"
-        ]
+        "locales": ["zh-cn"]
       }
     ]
   ]
