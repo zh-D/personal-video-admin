@@ -5,6 +5,7 @@ import { Input, Message, Form } from '@alifd/next';
 
 import { useInterval } from './utils';
 import styles from './index.module.scss';
+import { Link } from 'react-router-dom';
 
 const { Item } = Form;
 
@@ -146,9 +147,9 @@ export default function RegisterBlock() {
             </Form.Submit>
           </Item>
           <Item style={{ textAlign: 'center' }}>
-            <a href="/" className={styles.link}>
+            <Link to="/login" className={styles.link}>
               使用已有账号登录
-            </a>
+            </Link>
           </Item>
         </Form>
       </div>

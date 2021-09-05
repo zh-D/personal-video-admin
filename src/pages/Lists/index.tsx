@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import ActionTable from './components/ActionTable';
+import DialogTable from './components/DialogTable';
 
 export default function () {
   return (
-    <div className="ListList-page">
-      {/* action bar table */}
-      <ActionTable />
+    <div className="Lists-page">
+      {/* dialog table */}
+      <DialogTable />
     </div>
   );
 }

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import BasicList from './components/BasicList';
+import DialogTable from './components/DialogTable';
 
 export default function () {
   return (
     <div className="Videos-page">
-      {/* intro block */}
-      <BasicList />
+      {/* dialog table */}
+      <DialogTable />
     </div>
   );
 }

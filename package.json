@@ -5,7 +5,7 @@
   "dependencies": {
     "@alifd/next": "^1.19.4",
     "@alifd/theme-design-pro": "^0.x",
-    "ahooks": "^2.0.0",
+    "ahooks": "^2.10.9",
     "lodash.debounce": "^4.0.8",
     "moment": "^2.24.0",
     "prop-types": "^15.5.8",

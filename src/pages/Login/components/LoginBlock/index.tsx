@@ -3,6 +3,7 @@ import { Input, Message, Form, Divider, Checkbox, Icon } from '@alifd/next';
 
 import { useInterval } from './utils';
 import styles from './index.module.scss';
+import { Link } from 'react-router-dom';
 
 const { Item } = Form;
 
@@ -160,9 +161,9 @@ const LoginBlock: React.FunctionComponent<LoginProps> = (
               </Checkbox>
             </Item>
             <div>
-              <a href="/" className={styles.link}>
+              <Link to="/notfound" className={styles.link}>
                 忘记密码
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -181,9 +182,9 @@ const LoginBlock: React.FunctionComponent<LoginProps> = (
               其他登录方式 <Icon type="atm" size="small" /> <Icon type="atm" size="small" />{' '}
               <Icon type="atm" size="small" />
             </div>
-            <a href="/" className={styles.link}>
+            <Link to="/register" className={styles.link}>
               注册账号
-            </a>
+            </Link>
           </div>
         </Form>
       </div>
