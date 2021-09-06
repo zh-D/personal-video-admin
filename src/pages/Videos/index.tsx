@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import DialogTable from './components/DialogTable';
 
 export default function () {
   return (
-    <div className="Videos-page">
+    <div className="Lists-page">
       {/* dialog table */}
       <DialogTable />
     </div>
