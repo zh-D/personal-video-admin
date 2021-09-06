@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import DialogTable from './components/DialogTable';
 
 export default function () {

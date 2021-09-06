@@ -8,25 +8,50 @@ const getDialogTitle = (actionType: ActionType): string => {
   switch (actionType) {
     case 'add':
     default:
-      return '添加员工';
+      return 'Add List';
 
     case 'edit':
-      return '编辑员工';
+      return 'Edit List';
 
     case 'preview':
-      return '预览员工';
+      return 'Preview List';
   }
 };
 
 const DialogOperation: React.FC<OperaitionProps & DialogProps> = (props) => {
-  const { actionType, dataSource, onOk = () => {}, ...lastProps } = props;
+  const { actionType, dataSource, onOk = () => { }, ...lastProps } = props;
   const operationRef = useRef<OperationRef>(null);
+
+  const updateLists = async (newLists) => {
+    const res = await fetch(`/api/lists/${newLists._id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        token: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMzBkN2NmNjc0YmEyM2QyNDBjMGZjYiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDg0MjAxNiwiZXhwIjoxNjMxMjc0MDE2fQ.SZUF1yu9FLF3ZBHsOsBxoElLleVqCk-eY52VbLLT96k",
+      },
+      method: 'PUT',
+      body: JSON.stringify(newLists)
+    })
+    console.log(res.json());
+
+  }
 
   const handleOk = useCallback(() => {
     if (actionType === 'preview') {
       return onOk(null);
     }
-    operationRef.current.getValues((values) => {
+    operationRef.current.getValues(async (values) => {
+      values.content = values.content.map((item) => {
+        return {
+          title: item.slice(0, item.length - 24),
+          _id: item.slice(item.length - 24)
+        }
+      })
+      try {
+        await updateLists(values)
+      } catch (err) {
+        console.log(err);
+      }
+
       onOk(values);
     });
   }, [actionType, onOk]);
