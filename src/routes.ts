@@ -3,9 +3,7 @@ import BasicLayout from '@/layouts/BasicLayout';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import Video from '@/pages/Video';
-import NewVideo from '@/pages/NewVideo';
 import List from '@/pages/List';
-import NewList from '@/pages/NewList';
 import NotFound from '@/pages/NotFound';
 import Lists from '@/pages/Lists';
 import Videos from '@/pages/Videos';
@@ -20,8 +18,6 @@ const routerConfig: IRouterConfig[] = [
     path: '/',
     component: BasicLayout,
     children: [
-      { path: '/newVideo', component: NewVideo },
-      { path: '/newlist', component: NewList },
       { path: '/lists', component: Lists },
       { path: '/videos', component: Videos },
     ],
