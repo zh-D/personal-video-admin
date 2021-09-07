@@ -91,16 +91,22 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
 
   const [videos, setVideos] = useState<Video[]>([])
   useEffect(() => {
-    (async () => {
-      const res = await fetch(`/api/videos`, {
-        headers: {
-          token: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMzBkN2NmNjc0YmEyM2QyNDBjMGZjYiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDg0MjAxNiwiZXhwIjoxNjMxMjc0MDE2fQ.SZUF1yu9FLF3ZBHsOsBxoElLleVqCk-eY52VbLLT96k",
-        },
-      })
-      const data = await res.json()
-      setVideos(data)
-    })()
-  }, [])
+    if (visible) {
+      (async () => {
+        try {
+          const res = await fetch(`/api/videos`, {
+            headers: {
+              token: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMzBkN2NmNjc0YmEyM2QyNDBjMGZjYiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDg0MjAxNiwiZXhwIjoxNjMxMjc0MDE2fQ.SZUF1yu9FLF3ZBHsOsBxoElLleVqCk-eY52VbLLT96k",
+            },
+          })
+          const data = await res.json()
+          setVideos(data)
+        } catch (err) {
+          console.log(err)
+        }
+      })()
+    }
+  }, [visible])
 
   return (
     <Dialog
