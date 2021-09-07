@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useImperativeHandle } from 'react';
 import { Select, Form, Field, Input } from '@alifd/next';
 
 const FormItem = Form.Item;
@@ -26,6 +26,19 @@ export interface OperationRef {
   getValues: (callback: (vals: Record<string, unknown>) => void) => void;
 }
 
+export interface Video {
+  _id: String,
+  type: String,
+  title: String,
+  desc: String,
+  img: String,
+  imgSm: String,
+  imgTitle: String,
+  video: String,
+  createAt: Date,
+  updatedAt: Date
+}
+
 const Operation: React.ForwardRefRenderFunction<OperationRef, OperaitionProps> = (props, ref) => {
   const { actionType } = props;
   const dataSource = props.dataSource || {};
@@ -34,14 +47,20 @@ const Operation: React.ForwardRefRenderFunction<OperationRef, OperaitionProps> =
     field.reset();
     if (dataSource) {
       const newValues = {
-        name: dataSource.name.last,
-        email: dataSource.email,
-        phone: dataSource.phone,
-        gender: dataSource.gender,
+        _id: dataSource._id,
+        title: dataSource.title,
+        desc: dataSource.desc,
+        type: dataSource.type,
+        genre: dataSource.genre,
+        img: dataSource.img,
+        imgTitle: dataSource.imgTitle,
+        imgSm: dataSource.imgSm,
+        video: dataSource.video
       };
       field.setValues(newValues);
     }
   }, [field, dataSource]);
+
   useImperativeHandle<OperationRef, OperationRef>(
     ref,
     () => {
@@ -70,45 +89,84 @@ const Operation: React.ForwardRefRenderFunction<OperationRef, OperaitionProps> =
         {...formItemLayout}
       >
         <FormItem
-          label="姓名:"
+          label="Id:"
           required={!isPreview}
           requiredMessage="必填"
         >
           <Input
-            {...field.init('name')}
+            {...field.init('_id')}
           />
         </FormItem>
         <FormItem
-          label="邮箱:"
-          format="email"
+          label="Title:"
           required={!isPreview}
           requiredMessage="必填"
         >
           <Input
-            name="email"
+            {...field.init('title')}
           />
         </FormItem>
         <FormItem
-          label="手机号:"
-          format="tel"
+          label="Desc:"
           required={!isPreview}
           requiredMessage="必填"
         >
           <Input
-            name="phone"
+            {...field.init('desc')}
           />
         </FormItem>
         <FormItem
-          label="性别:"
+          label="Type"
           required={!isPreview}
           requiredMessage="必填"
         >
-          <Select
-            name="gender"
-            dataSource={[
-              { value: 'male', label: '男' },
-              { value: 'female', label: '女' },
-            ]}
+          <Input
+            {...field.init('type')}
+          />
+        </FormItem>
+        <FormItem
+          label="Genre:"
+          required={!isPreview}
+          requiredMessage="必填"
+        >
+          <Input
+            {...field.init('genre')}
+          />
+        </FormItem>
+        <FormItem
+          label="Img:"
+          required={!isPreview}
+          requiredMessage="必填"
+        >
+          <Input
+            {...field.init('img')}
+          />
+        </FormItem>
+        <FormItem
+          label="Title image:"
+          required={!isPreview}
+          requiredMessage="必填"
+        >
+          <Input
+            {...field.init('imgTitle')}
+          />
+        </FormItem>
+        <FormItem
+          label="Thumbnail image:"
+          required={!isPreview}
+          requiredMessage="必填"
+        >
+          <Input
+            {...field.init('imgSm')}
+          />
+        </FormItem>
+        <FormItem
+          label="Video:"
+          required={!isPreview}
+          requiredMessage="必填"
+        >
+          <Input
+            {...field.init('video')}
           />
         </FormItem>
       </Form>

@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { Button, Field, Table, Card, Pagination, Message, Dialog } from '@alifd/next';
+import React, { useCallback, useState } from 'react';
+import { Button, Field, Table, Card, Pagination, Message, Dialog, Icon } from '@alifd/next';
 import { useFusionTable, useSetState } from 'ahooks';
 
 import EmptyBlock from './EmptyBlock';
@@ -8,6 +8,7 @@ import DialogOperation from './DialogOperation';
 import { ActionType, OperaitionProps } from './Operation';
 
 import styles from './index.module.scss';
+import DialogForm from '../DialogForm';
 
 const getTableData = (
   { current, pageSize }: { current: number; pageSize: number },
@@ -20,16 +21,17 @@ const getTableData = (
         query += `&${key}=${value}`;
       }
     });
-    console.log(`https://randomuser.me/api?results=${pageSize}&${query}`);
-
-    return fetch(`https://randomuser.me/api?results=${pageSize}&${query}`)
-      .then(res => res.json())
+    return fetch(`/api/videos?${query}`, {
+      headers: {
+        token: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMzBkN2NmNjc0YmEyM2QyNDBjMGZjYiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDg0MjAxNiwiZXhwIjoxNjMxMjc0MDE2fQ.SZUF1yu9FLF3ZBHsOsBxoElLleVqCk-eY52VbLLT96k",
+      },
+    }).then(res => res.json())
       .then(res => {
         console.log(res.results);
-        
+
         return ({
-          total: 55,
-          list: res.results.slice(0, 10),
+          total: res.count,
+          list: res.results.slice(0, 10)
         })
       });
   }
@@ -48,10 +50,15 @@ const getTableData = (
 };
 
 interface ColumnWidth {
-  name: number;
-  email: number;
-  phone: number;
-  gender: number;
+  _id: number;
+  type: number;
+  desc: number;
+  genre: number;
+  title: number;
+  img: number;
+  imgTitle: number;
+  imgSm: number;
+  video: number;
   operation: number;
 }
 
@@ -63,14 +70,24 @@ interface DialogState {
 }
 
 const defaultColumnWidth: ColumnWidth = {
-  name: 140,
-  email: 500,
-  phone: 500,
-  gender: 140,
-  operation: 150,
+  _id: 150,
+  type: 500,
+  desc: 500,
+  genre: 500,
+  title: 500,
+  img: 500,
+  imgTitle: 500,
+  imgSm: 500,
+  video: 500,
+  operation: 500
 };
 
-const DialogTable: React.FC = () => {
+interface DialogTableProps {
+  // setFormVisible: () => void
+}
+
+const DialogTable: React.FC<DialogTableProps> = () => {
+  const [fromVisible, setFormVisible] = useState(false)
   const [state, setState] = useSetState<DialogState>({
     columnWidth: defaultColumnWidth,
     optCol: null,
@@ -115,15 +132,32 @@ const DialogTable: React.FC = () => {
     handleCancel();
   }, [handleCancel, reset, state]);
 
+  const deleteVideo = async (id) => {
+    const res = await fetch(`/api/videos/${id}`, {
+      headers: {
+        token: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMzBkN2NmNjc0YmEyM2QyNDBjMGZjYiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDg0MjAxNiwiZXhwIjoxNjMxMjc0MDE2fQ.SZUF1yu9FLF3ZBHsOsBxoElLleVqCk-eY52VbLLT96k",
+      },
+      method: 'DELETE',
+    })
+    console.log(res.json());
+
+  }
+
   const handleDelete = useCallback((data: any) => {
     if (!data) {
       return;
     }
     Dialog.confirm({
       title: '删除提醒',
-      content: `确定删除 ${data.name.last} 吗`,
-      onOk() {
-        Message.success(`${data.name.last} 删除成功!`);
+      content: `确定删除 ${data.title} 吗`,
+      async onOk() {
+        try {
+          await deleteVideo(data._id)
+        } catch (err) {
+          console.log(err);
+        }
+
+        Message.success(`${data.title} 删除成功!`);
         reset();
       },
     });
@@ -138,7 +172,7 @@ const DialogTable: React.FC = () => {
           type="primary"
           onClick={() => operationCallback({ actionType: 'edit', dataSource: record })}
         >
-          编辑
+          Edit
         </Button>
         &nbsp;&nbsp;
         <Button
@@ -146,7 +180,7 @@ const DialogTable: React.FC = () => {
           type="primary"
           onClick={() => handleDelete(record)}
         >
-          删除
+          Delete
         </Button>
         &nbsp;&nbsp;
         <Button
@@ -154,7 +188,7 @@ const DialogTable: React.FC = () => {
           type="primary"
           onClick={() => operationCallback({ actionType: 'preview', dataSource: record })}
         >
-          查看
+          Preview
         </Button>
       </div>
     );
@@ -164,18 +198,30 @@ const DialogTable: React.FC = () => {
     <div className={styles.DialogTable}>
       <Card free>
         <Card.Content>
+          <div className={styles.actionBar}>
+            <div className={styles.buttonGroup}>
+              <Button type="primary" onClick={() => setFormVisible(!fromVisible)}>
+                New Video
+              </Button>
+            </div>
+          </div>
           <Table
             {...tableProps}
             onResizeChange={onResizeChange}
             emptyContent={error ? <ExceptionBlock onRefresh={refresh} /> : <EmptyBlock />}
-            primaryKey="email"
+            primaryKey="_id"
           >
-            <Table.Column title="name" dataIndex="name.last" resizable width={columnWidth.name} />
-            <Table.Column title="email" dataIndex="email" resizable width={columnWidth.email} />
-            <Table.Column title="phone" dataIndex="phone" resizable width={columnWidth.phone} />
-            <Table.Column title="gender" dataIndex="gender" resizable width={columnWidth.gender} />
+            <Table.Column title="Id" dataIndex="_id" resizable width={columnWidth._id} />
+            <Table.Column title="Title" dataIndex="title" resizable width={columnWidth.title} />
+            <Table.Column title="desc" dataIndex="desc" resizable width={columnWidth.desc} />
+            <Table.Column title="Type" dataIndex="type" resizable width={columnWidth.type} />
+            <Table.Column title="Genre" dataIndex="genre" resizable width={columnWidth.genre} />
+            <Table.Column title="Img" dataIndex="img" resizable width={columnWidth.img} />
+            <Table.Column title="Title image" dataIndex="imgTitle" resizable width={columnWidth.img} />
+            <Table.Column title="Thumbnail image" dataIndex="imgSm" resizable width={columnWidth.img} />
+            <Table.Column title="Video" dataIndex="video" resizable width={columnWidth.img} />
             <Table.Column
-              title="操作"
+              title="Operation"
               resizable
               width={columnWidth.operation}
               cell={cellOperation}
@@ -203,6 +249,14 @@ const DialogTable: React.FC = () => {
         onOk={handleOk}
         onClose={handleCancel}
         onCancel={handleCancel}
+      />
+      <DialogForm
+        visible={fromVisible}
+        setFormVisible={
+          (): void => {
+            setFormVisible(!fromVisible);
+          }}
+        reset={reset}
       />
     </div>
   );
