@@ -10,47 +10,7 @@ import { ActionType, OperaitionProps } from './Operation';
 import styles from './index.module.scss';
 import DialogForm from '../DialogForm';
 
-const getTableData = (
-  { current, pageSize }: { current: number; pageSize: number },
-  formData: { status: 'normal' | 'empty' | 'exception' },
-): Promise<any> => {
-  if (!formData.status || formData.status === 'normal') {
-    let query = `page=${current}&size=${pageSize}`;
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value) {
-        query += `&${key}=${value}`;
-      }
-    });
-    return fetch(`/api/lists?${query}`, {
-      headers: {
-        token: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMzBkN2NmNjc0YmEyM2QyNDBjMGZjYiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDg0MjAxNiwiZXhwIjoxNjMxMjc0MDE2fQ.SZUF1yu9FLF3ZBHsOsBxoElLleVqCk-eY52VbLLT96k",
-      },
-    }).then(res => res.json())
-      .then(res => {
-        console.log(res.results);
-
-        return ({
-          total: res.count,
-          list: res.results.slice(0, 10).map((list) => {
-            list.content = list.content.map((item) => { return item.title + item._id })
-            return list
-          }),
-        })
-      });
-  }
-  if (formData.status === 'empty') {
-    return Promise.resolve([]);
-  }
-  if (formData.status === 'exception') {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        reject(new Error('data exception'));
-      }, 1000);
-    });
-  }
-
-  return Promise.resolve([]);
-};
+import store from '@/store';
 
 interface ColumnWidth {
   _id: number;
@@ -91,6 +51,50 @@ const DialogTable: React.FC<DialogTableProps> = () => {
   });
   const { actionVisible, columnWidth, optCol } = state;
   const field = Field.useField([]);
+
+  const [userState, userDispatchers] = store.useModel('user');
+
+  const getTableData = (
+    { current, pageSize }: { current: number; pageSize: number },
+    formData: { status: 'normal' | 'empty' | 'exception' },
+  ): Promise<any> => {
+    if (!formData.status || formData.status === 'normal') {
+      let query = `page=${current}&size=${pageSize}`;
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value) {
+          query += `&${key}=${value}`;
+        }
+      });
+      return fetch(`/api/lists?${query}`, {
+        headers: {
+          token: "Bearer " + userState.accessToken
+        },
+      }).then(res => res.json())
+        .then(res => {
+          console.log(res.results);
+
+          return ({
+            total: res.count,
+            list: res.results.slice(0, 10).map((list) => {
+              list.content = list.content.map((item) => { return item.title + item._id })
+              return list
+            }),
+          })
+        });
+    }
+    if (formData.status === 'empty') {
+      return Promise.resolve([]);
+    }
+    if (formData.status === 'exception') {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          reject(new Error('data exception'));
+        }, 1000);
+      });
+    }
+
+    return Promise.resolve([]);
+  };
   const { paginationProps, tableProps, search, error, refresh } = useFusionTable(getTableData, {
     field,
   });
@@ -130,7 +134,7 @@ const DialogTable: React.FC<DialogTableProps> = () => {
   const deleteLists = async (id) => {
     const res = await fetch(`/api/lists/${id}`, {
       headers: {
-        token: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMzBkN2NmNjc0YmEyM2QyNDBjMGZjYiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDg0MjAxNiwiZXhwIjoxNjMxMjc0MDE2fQ.SZUF1yu9FLF3ZBHsOsBxoElLleVqCk-eY52VbLLT96k",
+        token: "Bearer " + userState.accessToken
       },
       method: 'DELETE',
     })

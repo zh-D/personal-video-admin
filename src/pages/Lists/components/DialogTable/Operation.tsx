@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useImperativeHandle } from 'react';
 import { Select, Form, Field, Input } from '@alifd/next';
+import store from '@/store';
 
 const FormItem = Form.Item;
 
@@ -41,6 +42,7 @@ export interface Video {
 
 const Operation: React.ForwardRefRenderFunction<OperationRef, OperaitionProps> = (props, ref) => {
   const { actionType } = props;
+  const [userState, userDispatchers] = store.useModel('user');
   const dataSource = props.dataSource || {};
   const field = Field.useField([]);
   useEffect(() => {
@@ -61,7 +63,7 @@ const Operation: React.ForwardRefRenderFunction<OperationRef, OperaitionProps> =
     (async () => {
       const res = await fetch(`/api/videos`, {
         headers: {
-          token: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMzBkN2NmNjc0YmEyM2QyNDBjMGZjYiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDg0MjAxNiwiZXhwIjoxNjMxMjc0MDE2fQ.SZUF1yu9FLF3ZBHsOsBxoElLleVqCk-eY52VbLLT96k",
+          token: "Bearer " + userState.accessToken
         },
       })
       const data = await res.json()

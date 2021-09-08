@@ -1,6 +1,8 @@
 import React, { SFC, useState, useEffect } from 'react';
-import { Dialog, Form, Field, Input, Select, Message } from '@alifd/next';
-
+import { Dialog, Form, Field, Input, Select, Message, Loading } from '@alifd/next';
+import store from '@/store';
+import { useRequest } from 'ice';
+import listServices from '../../services/listServices';
 export interface DataSource {
   title?: string;
   type?: string;
@@ -36,6 +38,9 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
     reset
   } = props;
 
+  const [userState, userDispatchers] = store.useModel('user');
+  const { data, error: createError, loading: creating, request: createList } = useRequest(listServices.createList);
+
   const field = Field.useField({
     values: dataSource,
   });
@@ -50,26 +55,20 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
       }
     })
     console.log('values:', values);
-    try {
-      await createList(values)
+
+    await createList(values)
+
+    if (!createError) {
       Message.success('提交成功');
-    } catch (err) {
+    } else {
       Message.error("提交失败")
-      console.log("失败", err);
     }
+
   };
 
-  const createList = async (data) => {
-
-    const res = await fetch(`/api/lists`, {
-      headers: {
-        'Content-Type': 'application/json',
-        token: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMzBkN2NmNjc0YmEyM2QyNDBjMGZjYiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDg0MjAxNiwiZXhwIjoxNjMxMjc0MDE2fQ.SZUF1yu9FLF3ZBHsOsBxoElLleVqCk-eY52VbLLT96k",
-      },
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
-    console.log(await res.json());
+  const onOk = () => {
+    setFormVisible();
+    reset()
   }
 
   const submit = async () => {
@@ -81,8 +80,6 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
     }
 
     await onSubmit(field.getValues());
-    setFormVisible();
-    reset()
   };
 
   const close = () => {
@@ -96,7 +93,7 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
         try {
           const res = await fetch(`/api/videos`, {
             headers: {
-              token: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMzBkN2NmNjc0YmEyM2QyNDBjMGZjYiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDg0MjAxNiwiZXhwIjoxNjMxMjc0MDE2fQ.SZUF1yu9FLF3ZBHsOsBxoElLleVqCk-eY52VbLLT96k",
+              token: "Bearer " + userState.accessToken
             },
           })
           const data = await res.json()
@@ -113,7 +110,7 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
       visible={visible}
       title="New List"
       style={{ width: 720 }}
-      onOk={submit}
+      onOk={onOk}
       onCancel={close}
     >
       <Form field={field} fullWidth style={{ paddingLeft: 40, paddingRight: 40 }}>
@@ -133,6 +130,9 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
             })}
           </Select>
         </Form.Item>
+        <Form.Submit disabled={creating} type="primary" onClick={submit} style={{ marginRight: '5px' }}>
+          提交{creating && <Loading />}
+        </Form.Submit>
       </Form>
     </Dialog>
   );
