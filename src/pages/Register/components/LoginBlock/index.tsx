@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Input, Message, Form } from '@alifd/next';
 
-import { useInterval } from './utils';
 import styles from './index.module.scss';
 import { Link } from 'react-router-dom';
 
@@ -13,40 +12,20 @@ export interface RegisterProps {
   email: string;
   password: string;
   rePassword: string;
-  phone: string;
-  code: string;
+  username: string;
 }
 
 export default function RegisterBlock() {
-  const [postData, setValue] = useState({
+  const [postData, setValue] = useState<RegisterProps>({
     email: '',
     password: '',
     rePassword: '',
-    phone: '',
-    code: '',
+    username: ''
   });
 
-  const [isRunning, checkRunning] = useState(false);
-  const [second, setSecond] = useState(59);
-
-  useInterval(() => {
-    setSecond(second - 1);
-    if (second <= 0) {
-      checkRunning(false);
-      setSecond(59);
-    }
-  }, isRunning ? 1000 : null);
 
   const formChange = (value: RegisterProps) => {
     setValue(value);
-  };
-
-  const sendCode = (values: RegisterProps, errors: []) => {
-    if (errors) {
-      return;
-    }
-    // get values.phone
-    checkRunning(true);
   };
 
   const checkPass = (rule: any, values: string, callback: (errors?: string) => void) => {
@@ -79,6 +58,9 @@ export default function RegisterBlock() {
         <p className={styles.desc}>注册账号</p>
 
         <Form value={postData} onChange={formChange} size="large">
+          <Item required requiredMessage="必填">
+            <Input name="username" size="large" maxLength={10} placeholder="用户名" />
+          </Item>
           <Item format="email" required requiredMessage="必填">
             <Input name="email" size="large" maxLength={20} placeholder="邮箱" />
           </Item>
@@ -96,44 +78,6 @@ export default function RegisterBlock() {
               size="large"
               htmlType="password"
               placeholder="确认密码"
-            />
-          </Item>
-          <Item format="tel" required requiredMessage="必填" asterisk={false}>
-            <Input
-              name="phone"
-              size="large"
-              innerBefore={
-                <span className={styles.innerBeforeInput}>
-                  +86
-                  <span className={styles.line} />
-                </span>
-              }
-              maxLength={20}
-              placeholder="手机号"
-            />
-          </Item>
-          <Item required requiredMessage="必填">
-            <Input
-              name="code"
-              size="large"
-              innerAfter={
-                <span className={styles.innerAfterInput}>
-                  <span className={styles.line} />
-                  <Form.Submit
-                    text
-                    type="primary"
-                    style={{ width: 64 }}
-                    disabled={!!isRunning}
-                    validate={['phone']}
-                    onClick={sendCode}
-                    className={styles.sendCode}
-                  >
-                    {isRunning ? `${second}秒后再试` : '获取验证码'}
-                  </Form.Submit>
-                </span>
-              }
-              maxLength={20}
-              placeholder="验证码"
             />
           </Item>
           <Item>
