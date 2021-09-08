@@ -3,7 +3,9 @@ import LoginBlock from './components/LoginBlock';
 
 export default function () {
   return (
-    <div className="Login-page">
+    <div style={{
+      marginTop: 100
+    }}>
       {/* block for login */}
       <LoginBlock />
     </div>
