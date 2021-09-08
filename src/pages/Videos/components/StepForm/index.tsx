@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Card, Form, Input, Icon, Radio, Field, Step, Button, Box, Typography, Upload } from '@alifd/next';
-
+import { Message, Card, Form, Input, Icon, Loading, Field, Step, Button, Typography, Upload } from '@alifd/next';
+import { useRequest } from 'ice';
+import videoServices from '../../services/videoServices';
 import { Item } from '@alifd/next/types/step';
 
 import styles from './index.module.scss';
@@ -39,7 +40,7 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
   const [video, setVideo] = useState<Video>({});
   const [uploadedCount, setUploadedCount] = useState<number>(0)
 
-  console.log(video);
+  const { data, error: createError, loading: creating, request: createVideo } = useRequest(videoServices.createVideo);
 
   const formField = Field.useField({ values: {} });
 
@@ -71,18 +72,7 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
     setStep(0);
   };
 
-  const createVideo = async (data) => {
 
-    const res = await fetch(`/api/videos`, {
-      headers: {
-        'Content-Type': 'application/json',
-        token: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMzBkN2NmNjc0YmEyM2QyNDBjMGZjYiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDg0MjAxNiwiZXhwIjoxNjMxMjc0MDE2fQ.SZUF1yu9FLF3ZBHsOsBxoElLleVqCk-eY52VbLLT96k",
-      },
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
-    console.log(await res.json());
-  }
 
   const fillInfo = async (): void => {
     const { errors } = await formField.validatePromise();
@@ -154,6 +144,11 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
 
   const submit = async () => {
     await createVideo(video)
+    if (!createError) {
+      Message.success("创建成功")
+    } else {
+      Message.error("创建失败")
+    }
     goNext()
   }
 
@@ -207,11 +202,12 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
     case 1:
       actions = (
         <>
-          <Button onClick={goPrev} style={{ marginRight: '5px' }}>
+          <Button onClick={goPrev} disabled={uploadedCount === 0 ? false : true} style={{ marginRight: '5px' }}>
             上一步
           </Button>
           <Form.Submit type="primary" disabled={uploadedCount >= 1 ? true : false} onClick={uploadFile} validate>
-            {uploadedCount < 1 ? "上传文件" : uploadedCount <= 4 ? "上传中" : "上传完成"}
+            {uploadedCount === 0 ? "上传文件" : uploadedCount === 5 ? "上传完成" : "上传中"}
+            {(creating || (uploadedCount <= 4 && uploadedCount >= 1)) && <Loading />}
           </Form.Submit>
           <Button disabled={uploadedCount === 5 ? false : true} onClick={goNext} style={{ marginRight: '5px' }}>
             下一步
@@ -222,7 +218,7 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
       mainbody = (
         <Form
           field={formField}
-          isPreview={uploadedCount >= 1}
+          isPreview={(creating || (uploadedCount <= 4 && uploadedCount >= 1))}
           className={styles.form}
           responsive
           fullWidth
@@ -257,7 +253,7 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
       actions = (
         <>
           <Form.Submit type="primary" onClick={submit} style={{ marginRight: '5px' }}>
-            提交
+            提交{(creating || (uploadedCount <= 4 && uploadedCount >= 1)) && <Loading />}
           </Form.Submit>
         </>
       );
@@ -311,17 +307,17 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
     case 3:
       mainbody = (
         <>
-          <Box align="center">
+          <div align="center">
             <Icon type="success-filling" size={72} className={styles.succesIcon} />
             <Typography.H1>提交成功</Typography.H1>
             {/* <Typography.Text>5s 后自动跳转至工单页</Typography.Text> */}
-            <Box margin={20} direction="row">
+            <div margin={20} direction="row">
               <Button type="primary" style={{ marginRight: '5px' }} onClick={onCancel}>
                 关闭表单
               </Button>
               <Button onClick={goInitial}>继续创建</Button>
-            </Box>
-          </Box>
+            </div>
+          </div>
         </>
       );
       break;
@@ -331,6 +327,7 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
 
   return (
     <div>
+
       <Card free>
         <Card.Content className={styles.StepForm}>
           <Step current={currentStep} shape="circle">

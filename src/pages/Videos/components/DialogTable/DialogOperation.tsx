@@ -1,6 +1,7 @@
 import React, { useRef, useCallback } from 'react';
 import { Dialog } from '@alifd/next';
 import { DialogProps } from '@alifd/next/types/dialog';
+import store from '@/store';
 
 import Operation, { ActionType, OperaitionProps, OperationRef } from './Operation';
 
@@ -21,12 +22,13 @@ const getDialogTitle = (actionType: ActionType): string => {
 const DialogOperation: React.FC<OperaitionProps & DialogProps> = (props) => {
   const { actionType, dataSource, onOk = () => { }, ...lastProps } = props;
   const operationRef = useRef<OperationRef>(null);
+  const [userState, userDispatchers] = store.useModel('user');
 
   const updateVideo = async (newVideo) => {
     const res = await fetch(`/api/videos/${newVideo._id}`, {
       headers: {
         'Content-Type': 'application/json',
-        token: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMzBkN2NmNjc0YmEyM2QyNDBjMGZjYiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzMDg0MjAxNiwiZXhwIjoxNjMxMjc0MDE2fQ.SZUF1yu9FLF3ZBHsOsBxoElLleVqCk-eY52VbLLT96k",
+        token: "Bearer " + userState.accessToken
       },
       method: 'PUT',
       body: JSON.stringify(newVideo)
