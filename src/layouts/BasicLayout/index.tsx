@@ -3,6 +3,7 @@ import { Shell, ConfigProvider } from '@alifd/next';
 import PageNav from './components/PageNav';
 import Logo from './components/Logo';
 import Footer from './components/Footer';
+import HeaderAvatar from './components/HeaderAvatar';
 
 (function () {
   const throttle = function (type: string, name: string, obj: Window = window) {
@@ -72,7 +73,7 @@ export default function BasicLayout({
       >
         <Shell.Branding>
           <Logo
-            image="https://img.alicdn.com/tfs/TB1.ZBecq67gK0jSZFHXXa9jVXa-904-826.png"
+            image=""
             text="Logo"
           />
         </Shell.Branding>
@@ -81,8 +82,14 @@ export default function BasicLayout({
           style={{
             marginRight: 10,
           }}
-        />
-        <Shell.Action />
+        >
+          {/* <GlobalSearch /> */}
+        </Shell.Navigation>
+        <Shell.Action>
+          {/* <Notice />
+          <SolutionLink /> */}
+          <HeaderAvatar />
+        </Shell.Action>
         <Shell.Navigation>
           <PageNav />
         </Shell.Navigation>
