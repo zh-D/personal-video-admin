@@ -1,5 +1,5 @@
 import React from 'react';
-import { Overlay, Menu, Icon } from '@alifd/next';
+import { Overlay, Menu, Icon, Avatar } from '@alifd/next';
 import styles from './index.module.scss';
 
 import store from '@/store';
@@ -13,15 +13,15 @@ export interface Props {
   mail: string;
 }
 
-const UserProfile = ({ name, avatar, mail }) => {
+const UserProfile = ({ username, avatar, email }) => {
   return (
     <div className={styles.profile}>
       <div className={styles.avatar}>
-        {/* <Avatar src={avatar} alt="用户头像" /> */}
+        <Avatar src={avatar} alt="用户头像" />
       </div>
       <div className={styles.content}>
-        <h4>{name}</h4>
-        <span>{mail}</span>
+        <h4>{username}</h4>
+        <span>{email}</span>
       </div>
     </div>
   );
@@ -34,14 +34,14 @@ const HeaderAvatar = (props: Props) => {
     <Popup
       trigger={
         <div className={styles.headerAvatar}>
-          {/* <Avatar size="small" src={avatar} alt="用户头像" /> */}
-          <span style={{ marginLeft: 10 }}>{name}</span>
+          <Avatar size="small" src={avatar} alt="用户头像" />
+          <span style={{ marginLeft: 10 }}>{userState.username}</span>
         </div>
       }
       triggerType="click"
     >
       <div className={styles.avatarPopup}>
-        <UserProfile {...props} />
+        <UserProfile {...userState} />
         <Menu className={styles.menu}>
           <Item><Icon size="small" type="account" />个人设置</Item>
           <Item><Icon size="small" type="set" />系统设置</Item>
