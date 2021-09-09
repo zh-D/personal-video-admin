@@ -78,10 +78,10 @@ const LoginBlock: React.FunctionComponent<LoginProps> = (
             </Form.Submit>
           </Item>
           <div className={styles.infoLine}>
-            <Link to="/notfound" className={styles.link}>
+            <Link to="/user/notfound" className={styles.link}>
               忘记密码
             </Link>
-            <Link to="/register" className={styles.link}>
+            <Link to="/user/register" className={styles.link}>
               注册账号
             </Link>
           </div>

@@ -5,4 +5,7 @@ export default {
     async login(user) {
         return await request.post('/api/auth/login', user);
     },
+    async register(user) {
+        return await request.post('/api/auth/register', user)
+    }
 }

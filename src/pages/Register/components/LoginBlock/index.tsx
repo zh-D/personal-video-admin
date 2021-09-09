@@ -1,10 +1,14 @@
 /* eslint-disable @iceworks/best-practices/no-secret-info */
 import React, { useState } from 'react';
+import { useHistory } from 'ice';
 import PropTypes from 'prop-types';
-import { Input, Message, Form } from '@alifd/next';
+import { Input, Message, Form, Loading } from '@alifd/next';
 
 import styles from './index.module.scss';
 import { Link } from 'react-router-dom';
+
+import { useRequest } from 'ice';
+import userService from '@/services/user';
 
 const { Item } = Form;
 
@@ -16,6 +20,8 @@ export interface RegisterProps {
 }
 
 export default function RegisterBlock() {
+  const { data, error, loading, request } = useRequest(userService.register);
+  const history = useHistory()
   const [postData, setValue] = useState<RegisterProps>({
     email: '',
     password: '',
@@ -41,8 +47,14 @@ export default function RegisterBlock() {
       console.log('errors', errors);
       return;
     }
-    console.log('values:', values);
-    Message.success('注册成功');
+    request(values)
+    if (!error) {
+      Message.success("注册成功")
+      history.push('/user/login');
+    } else {
+      Message.error('注册失败');
+    }
+
   };
 
   return (
@@ -87,7 +99,7 @@ export default function RegisterBlock() {
               className={styles.submitBtn}
               validate
             >
-              注册账号
+              {loading ? <Loading /> : "注册账号"}
             </Form.Submit>
           </Item>
           <Item style={{ textAlign: 'center' }}>
