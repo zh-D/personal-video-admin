@@ -11,6 +11,7 @@ import styles from './index.module.scss';
 import DialogForm from '../DialogForm';
 
 import store from '@/store';
+import { useAuth } from 'ice';
 
 interface ColumnWidth {
   _id: number;
@@ -42,6 +43,7 @@ interface DialogTableProps {
 }
 
 const DialogTable: React.FC<DialogTableProps> = () => {
+  const [auth] = useAuth();
   const [fromVisible, setFormVisible] = useState(false)
   const [state, setState] = useSetState<DialogState>({
     columnWidth: defaultColumnWidth,
@@ -142,6 +144,19 @@ const DialogTable: React.FC<DialogTableProps> = () => {
 
   }
 
+  const popupCustomIcon = () => {
+    Dialog.confirm({
+      title: "Warning",
+      content: '你没有权限操作，仍要继续？',
+      messageProps: {
+        type: "warning"
+      },
+      onOk: () => setFormVisible(!fromVisible),
+      onCancel: () => console.log("cancel")
+    });
+  };
+
+
   const handleDelete = useCallback((data: any) => {
     if (!data) {
       return;
@@ -169,7 +184,13 @@ const DialogTable: React.FC<DialogTableProps> = () => {
         <Button
           text
           type="primary"
-          onClick={() => operationCallback({ actionType: 'edit', dataSource: record })}
+          onClick={() => {
+            if (auth.isAdmin) {
+              operationCallback({ actionType: 'edit', dataSource: record })
+            } else {
+              Message.error("你没有权限编辑 list，请联系管理员获取权限...")
+            }
+          }}
         >
           Edit
         </Button>
@@ -177,7 +198,13 @@ const DialogTable: React.FC<DialogTableProps> = () => {
         <Button
           text
           type="primary"
-          onClick={() => handleDelete(record)}
+          onClick={() => {
+            if (auth.isAdmin) {
+              handleDelete(record)
+            } else {
+              Message.error("你没有权限删除 list，请联系管理员获取权限...")
+            }
+          }}
         >
           Delete
         </Button>
@@ -205,7 +232,14 @@ const DialogTable: React.FC<DialogTableProps> = () => {
         <Card.Content>
           <div className={styles.actionBar}>
             <div className={styles.buttonGroup}>
-              <Button type="primary" onClick={() => setFormVisible(!fromVisible)}>
+              <Button type="primary" onClick={() => {
+                if (auth.isAdmin) {
+                  setFormVisible(!fromVisible)
+                } else {
+                  popupCustomIcon()
+                }
+
+              }}>
                 New List
               </Button>
             </div>

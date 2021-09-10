@@ -3,6 +3,7 @@ import { Dialog, Form, Field, Input, Select, Message, Loading } from '@alifd/nex
 import store from '@/store';
 import { useRequest } from 'ice';
 import listServices from '../../services/listServices';
+import { useAuth } from "ice"
 export interface DataSource {
   title?: string;
   type?: string;
@@ -38,6 +39,7 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
     reset
   } = props;
 
+  const [auth] = useAuth()
   const [userState, userDispatchers] = store.useModel('user');
   const { data, error: createError, loading: creating, request: createList } = useRequest(listServices.createList);
 
@@ -46,7 +48,13 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
   });
 
   const onSubmit = async (values) => {
+
     console.log(values);
+
+    if (!auth.isAdmin) {
+      Message.error("你没有权限删除 list，请联系管理员获取权限...")
+      return
+    }
 
     values.content = values.content.map((item) => {
       return {
@@ -67,6 +75,10 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
   };
 
   const onOk = () => {
+    if (!auth.isAdmin) {
+      Message.error("请点击取消...")
+      return
+    }
     setFormVisible();
     reset()
   }

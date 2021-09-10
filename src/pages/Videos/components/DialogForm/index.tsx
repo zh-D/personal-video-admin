@@ -1,6 +1,7 @@
 import React from 'react';
-import { Dialog } from '@alifd/next';
+import { Dialog, Message } from '@alifd/next';
 import StepForm from '../StepForm';
+import { useAuth } from 'ice';
 
 export interface Video {
   _id: String,
@@ -16,13 +17,18 @@ export interface Video {
 }
 
 const DialogForm = (props) => {
+  const [auth] = useAuth()
   const {
     visible = false,
     setFormVisible = () => { },
-    reset = () => {}
+    reset = () => { }
   } = props;
 
   const onOk = async () => {
+    if (!auth.isAdmin) {
+      Message.error("请点击取消...")
+      return
+    }
 
     setFormVisible();
     reset()
@@ -30,7 +36,6 @@ const DialogForm = (props) => {
 
   const onCancel = () => {
     setFormVisible();
-    reset()
   };
 
   return (
