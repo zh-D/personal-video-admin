@@ -172,19 +172,19 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
     labelAlign="top"
   >
     <Form.Item colSpan={12} label="Title" required>
-      <Input.TextArea placeholder="请输入项目详细信息" name="title" />
+      <Input.TextArea placeholder="Please input your video title" name="title" />
     </Form.Item>
 
     <Form.Item colSpan={12} label="Description" required>
-      <Input.TextArea placeholder="请输入项目详细信息" name="desc" />
+      <Input.TextArea placeholder="Please input your video description" name="desc" />
     </Form.Item>
 
     <Form.Item colSpan={12} label="Type" required>
-      <Input.TextArea placeholder="请输入项目详细信息" name="type" />
+      <Input.TextArea placeholder="Please input video type" name="type" />
     </Form.Item>
 
     <Form.Item colSpan={12} label="Genre" required>
-      <Input.TextArea placeholder="请输入项目详细信息" name="genre" />
+      <Input.TextArea placeholder="Please input video genre" name="genre" />
     </Form.Item>
     <Form.Item colSpan={12} >
       <Form.Submit type="primary" onClick={fillInfo} style={{ marginRight: '5px' }} validate>

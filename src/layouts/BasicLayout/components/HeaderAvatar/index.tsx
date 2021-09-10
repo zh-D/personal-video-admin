@@ -1,5 +1,5 @@
 import React from 'react';
-import { Overlay, Menu, Icon, Avatar } from '@alifd/next';
+import { Overlay, Menu, Icon, Avatar, Message, Dialog } from '@alifd/next';
 import styles from './index.module.scss';
 
 import store from '@/store';
@@ -27,9 +27,23 @@ const UserProfile = ({ username, avatar, email }) => {
   );
 };
 
+
+
 const HeaderAvatar = (props: Props) => {
   const { name, avatar } = props;
   const [userState, userDispatchers] = store.useModel('user');
+  const popupCustomIcon = () => {
+    Dialog.confirm({
+      title: "Warning",
+      content: '你确定要登出吗？',
+      messageProps: {
+        type: "warning"
+      },
+      onOk: () => userDispatchers.logout(),
+      onCancel: () => console.log("cancel")
+    });
+  };
+
   return (
     <Popup
       trigger={
@@ -43,9 +57,9 @@ const HeaderAvatar = (props: Props) => {
       <div className={styles.avatarPopup}>
         <UserProfile {...userState} />
         <Menu className={styles.menu}>
-          <Item><Icon size="small" type="account" />个人设置</Item>
-          <Item><Icon size="small" type="set" />系统设置</Item>
-          <Item onClick={() => { userDispatchers.logout() }}><Icon size="small" type="exit" />退出</Item>
+          <Item onClick={() => { Message.error("这个页面还没有开发哦") }}><Icon size="small" type="account" />个人设置</Item>
+          <Item onClick={() => { Message.error("这个页面还没有开发哦") }}><Icon size="small" type="set" />系统设置</Item>
+          <Item onClick={() => popupCustomIcon()}><Icon size="small" type="exit" />退出</Item>
         </Menu>
       </div>
     </Popup>

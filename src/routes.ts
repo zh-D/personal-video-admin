@@ -6,6 +6,7 @@ import NotFound from '@/pages/NotFound';
 import Lists from '@/pages/Lists';
 import Videos from '@/pages/Videos';
 import LoginWrapper from '@/components/LoginWrapper/';
+import Welcome from './layouts/BasicLayout/components/Welcome';
 
 const routerConfig: IRouterConfig[] = [
   { path: '/notfound', component: NotFound },
@@ -21,13 +22,14 @@ const routerConfig: IRouterConfig[] = [
     component: BasicLayout,
     wrappers: [LoginWrapper],
     children: [
+      { path: '/welcome', component: Welcome },
       { path: '/lists', component: Lists },
       { path: '/videos', component: Videos },
     ],
   },
   {
     path: '/',
-    redirect: '/details/dashboard',
+    redirect: '/details/welcome',
   },
 ];
 

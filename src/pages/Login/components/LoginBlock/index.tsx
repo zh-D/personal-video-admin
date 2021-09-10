@@ -22,7 +22,7 @@ const LoginBlock: React.FunctionComponent<LoginProps> = (
   const [, userDispatchers] = store.useModel('user');
   const { login: { isLoading, error: loginError } } = store.useModelEffectsState('user');
   const history = useHistory()
-  const [values, setValue] = useState<IDataSource>({ email: "", password: "" });
+  const [values, setValue] = useState<IDataSource>({ email: "guest@gmail.com", password: "123456" });
 
   const formChange = (values: IDataSource) => {
     setValue(values);

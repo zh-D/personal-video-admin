@@ -47,6 +47,11 @@ export default function RegisterBlock() {
       console.log('errors', errors);
       return;
     }
+
+    Message.error("注册功能暂未开放,跳转到登录页...")
+    history.push('/user/login');
+    return
+
     request(values)
     if (!error) {
       Message.success("注册成功")

@@ -1,7 +1,7 @@
 const headerMenuConfig = [];
 
 const asideMenuConfig = [
-  { path: '/details/dashboard', name: 'Dashboard' },
+  { path: '/details/welcome', name: 'Welcome' },
   { path: '/details/lists', name: 'Lists' },
   { path: '/details/videos', name: 'Videos' },
 ];

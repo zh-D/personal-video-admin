@@ -186,7 +186,13 @@ const DialogTable: React.FC<DialogTableProps> = () => {
         <Button
           text
           type="primary"
-          onClick={() => operationCallback({ actionType: 'edit', dataSource: record })}
+          onClick={() => {
+            if (auth.isAdmin) {
+              operationCallback({ actionType: 'edit', dataSource: record })
+            } else {
+              Message.error("你没有权限编辑 Video，请联系管理员获取权限...")
+            }
+          }}
         >
           Edit
         </Button>
