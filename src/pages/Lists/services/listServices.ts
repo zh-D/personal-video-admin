@@ -1,3 +1,4 @@
+import { logger } from 'ice';
 export default {
     // 简单场景
     async createList(data) {
@@ -10,6 +11,6 @@ export default {
             method: 'POST',
             body: JSON.stringify(data)
         })
-        console.log(await res.json());
+        logger.info(await res.json());
     }
 }

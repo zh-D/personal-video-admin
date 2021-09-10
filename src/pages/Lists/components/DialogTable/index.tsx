@@ -12,6 +12,7 @@ import DialogForm from '../DialogForm';
 
 import store from '@/store';
 import { useAuth } from 'ice';
+import { logger } from 'ice';
 
 interface ColumnWidth {
   _id: number;
@@ -73,7 +74,7 @@ const DialogTable: React.FC<DialogTableProps> = () => {
         },
       }).then(res => res.json())
         .then(res => {
-          console.log(res.results);
+          logger.info(res.results);
 
           return ({
             total: res.count,
@@ -140,7 +141,7 @@ const DialogTable: React.FC<DialogTableProps> = () => {
       },
       method: 'DELETE',
     })
-    console.log(res.json());
+    logger.info(res.json());
 
   }
 
@@ -152,7 +153,7 @@ const DialogTable: React.FC<DialogTableProps> = () => {
         type: "warning"
       },
       onOk: () => setFormVisible(!fromVisible),
-      onCancel: () => console.log("cancel")
+      onCancel: () => logger.info("cancel")
     });
   };
 
@@ -168,7 +169,7 @@ const DialogTable: React.FC<DialogTableProps> = () => {
         try {
           await deleteLists(data._id)
         } catch (err) {
-          console.log(err);
+          logger.info(err);
         }
 
         Message.success(`${data.title} 删除成功!`);

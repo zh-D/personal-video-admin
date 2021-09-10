@@ -1,7 +1,7 @@
 import React from 'react';
 import { Overlay, Menu, Icon, Avatar, Message, Dialog } from '@alifd/next';
 import styles from './index.module.scss';
-
+import { logger } from 'ice';
 import store from '@/store';
 
 const { Item } = Menu;
@@ -40,7 +40,7 @@ const HeaderAvatar = (props: Props) => {
         type: "warning"
       },
       onOk: () => userDispatchers.logout(),
-      onCancel: () => console.log("cancel")
+      onCancel: () => logger.info("cancel")
     });
   };
 

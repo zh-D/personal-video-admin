@@ -4,6 +4,7 @@ import store from '@/store';
 import { useRequest } from 'ice';
 import listServices from '../../services/listServices';
 import { useAuth } from "ice"
+import { logger } from 'ice';
 export interface DataSource {
   title?: string;
   type?: string;
@@ -49,10 +50,10 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
 
   const onSubmit = async (values) => {
 
-    console.log(values);
+    logger.info(values);
 
     if (!auth.isAdmin) {
-      Message.error("你没有权限删除 list，请联系管理员获取权限...")
+      Message.error("你没有权限新建 list，请联系管理员获取权限...")
       return
     }
 
@@ -62,7 +63,7 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
         _id: item.slice(item.length - 24)
       }
     })
-    console.log('values:', values);
+    logger.info('values:', values);
 
     await createList(values)
 
@@ -85,9 +86,9 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
 
   const submit = async () => {
     const { errors } = await field.validatePromise();
-    console.log(errors);
+    logger.info(errors);
 
-    if (errors && errors.length > 0) {
+    if (errors) {
       return
     }
 
@@ -111,7 +112,7 @@ const DialogForm: SFC<DialogFormProps> = (props) => {
           const data = await res.json()
           setVideos(data)
         } catch (err) {
-          console.log(err)
+          logger.info(err)
         }
       })()
     }

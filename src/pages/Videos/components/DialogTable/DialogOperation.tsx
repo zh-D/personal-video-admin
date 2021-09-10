@@ -2,6 +2,7 @@ import React, { useRef, useCallback } from 'react';
 import { Dialog } from '@alifd/next';
 import { DialogProps } from '@alifd/next/types/dialog';
 import store from '@/store';
+import { logger } from 'ice';
 
 import Operation, { ActionType, OperaitionProps, OperationRef } from './Operation';
 
@@ -33,7 +34,7 @@ const DialogOperation: React.FC<OperaitionProps & DialogProps> = (props) => {
       method: 'PUT',
       body: JSON.stringify(newVideo)
     })
-    console.log(await res.json());
+    logger.info(await res.json());
 
   }
 
@@ -45,7 +46,7 @@ const DialogOperation: React.FC<OperaitionProps & DialogProps> = (props) => {
       try {
         await updateVideo(values)
       } catch (err) {
-        console.log(err);
+        logger.info(err);
       }
 
       onOk(values);

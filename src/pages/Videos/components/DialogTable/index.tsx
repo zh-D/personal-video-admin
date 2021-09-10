@@ -3,6 +3,7 @@ import { Button, Field, Table, Card, Pagination, Message, Dialog, Icon } from '@
 import { useFusionTable, useSetState } from 'ahooks';
 import store from '@/store';
 import { useAuth } from 'ice';
+import { logger } from 'ice';
 
 import EmptyBlock from './EmptyBlock';
 import ExceptionBlock from './ExceptionBlock';
@@ -78,7 +79,7 @@ const DialogTable: React.FC<DialogTableProps> = () => {
         },
       }).then(res => res.json())
         .then(res => {
-          console.log(res.results);
+          logger.info(res.results);
 
           return ({
             total: res.count,
@@ -143,7 +144,7 @@ const DialogTable: React.FC<DialogTableProps> = () => {
       },
       method: 'DELETE',
     })
-    console.log(res.json());
+    logger.info(res.json());
 
   }
 
@@ -158,7 +159,7 @@ const DialogTable: React.FC<DialogTableProps> = () => {
         try {
           await deleteVideo(data._id)
         } catch (err) {
-          console.log(err);
+          logger.info(err);
         }
 
         Message.success(`${data.title} 删除成功!`);
@@ -175,7 +176,7 @@ const DialogTable: React.FC<DialogTableProps> = () => {
         type: "warning"
       },
       onOk: () => setFormVisible(!fromVisible),
-      onCancel: () => console.log("cancel")
+      onCancel: () => logger.info("cancel")
     });
   };
 

@@ -41,7 +41,7 @@ const DialogForm = (props) => {
   return (
     <Dialog
       visible={visible}
-      title="New List"
+      title="New Video"
       style={{ width: 720 }}
       onOk={onOk}
       onCancel={onCancel}

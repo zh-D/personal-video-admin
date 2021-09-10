@@ -4,6 +4,7 @@ import { Input, Message, Form, Loading } from '@alifd/next';
 import styles from './index.module.scss';
 import { Link } from 'react-router-dom';
 import store from "@/store"
+import { logger } from 'ice';
 
 const { Item } = Form;
 
@@ -30,12 +31,12 @@ const LoginBlock: React.FunctionComponent<LoginProps> = (
 
   const handleSubmit = async (values: IDataSource, errors: []) => {
     if (errors) {
-      console.log('errors', errors);
+      logger.info('errors', errors);
       return;
     }
-    console.log('values:', values);
+    logger.info('values:', values);
     await userDispatchers.login(values)
-    console.log(loginError);
+    logger.info(loginError);
     
     if (loginError) {
       Message.error('登录失败');

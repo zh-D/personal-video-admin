@@ -4,6 +4,7 @@ import { useRequest } from 'ice';
 import videoServices from '../../services/videoServices';
 import { Item } from '@alifd/next/types/step';
 import { useAuth } from 'ice';
+import { logger } from 'ice';
 
 import styles from './index.module.scss';
 
@@ -79,10 +80,10 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
 
   const fillInfo = async (values: Video, errors: []): void => {
     if (errors) {
-      console.log('errors', errors);
+      logger.info('errors', errors);
       return;
     }
-    console.log('values:', values);
+    logger.info('values:', values);
     setVideo((prev) => {
       return { ...prev, ...values };
     })
@@ -94,7 +95,7 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
   const uploadFile = async (items, errors) => {
 
     if (errors) {
-      console.log('errors', errors);
+      logger.info('errors', errors);
       return;
     }
 
@@ -109,7 +110,7 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
     //   const item = items[key][0]
     //   setUploadedCount((prev) => prev + 1)
     //   setVideo((prev) => {
-    //     console.log({ ...prev, [key]: item.name });
+    //     logger.info({ ...prev, [key]: item.name });
     //     return { ...prev, [key]: item.name };
     //   });
     // }
@@ -123,16 +124,16 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
+          logger.info("Upload is " + progress + "% done");
         },
         (error) => {
-          console.log(error);
+          logger.info(error);
         },
         () => {
           uploadTask.snapshot.ref.getDownloadURL().then((url) => {
-            console.log(url);
+            logger.info(url);
             setVideo((prev) => {
-              console.log({ ...prev, [key]: url });
+              logger.info({ ...prev, [key]: url });
               return { ...prev, [key]: url };
             });
             setUploadedCount((prev) => prev + 1)
@@ -158,7 +159,7 @@ const StepForm: React.FunctionComponent<StepFormProps> = (props: StepFormProps):
 
 
   const onChange = (info) => {
-    console.log(info);
+    logger.info(info);
   }
 
   const InfoForm = <Form

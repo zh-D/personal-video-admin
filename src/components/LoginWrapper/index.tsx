@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Redirect } from 'ice';
 import store from '@/store';
 import { useAuth } from 'ice';
+import { logger } from 'ice';
 
 const LoginWrapper = (WrappedComponent) => {
   const Wrapped = (props) => {
@@ -11,9 +12,9 @@ const LoginWrapper = (WrappedComponent) => {
     useEffect(() => { setAuth({ isAdmin: userState.isAdmin }); }, [])
 
 
-    console.log(localUser);
+    logger.info(localUser);
 
-    console.log(userState);
+    logger.info(userState);
 
     return (
       <>

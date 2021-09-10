@@ -2,7 +2,7 @@ import React, { useRef, useCallback } from 'react';
 import { Dialog } from '@alifd/next';
 import { DialogProps } from '@alifd/next/types/dialog';
 import store from '@/store';
-
+import { logger } from 'ice';
 import Operation, { ActionType, OperaitionProps, OperationRef } from './Operation';
 
 const getDialogTitle = (actionType: ActionType): string => {
@@ -33,7 +33,7 @@ const DialogOperation: React.FC<OperaitionProps & DialogProps> = (props) => {
       method: 'PUT',
       body: JSON.stringify(newLists)
     })
-    console.log(res.json());
+    logger.info(res.json());
 
   }
 
@@ -51,7 +51,7 @@ const DialogOperation: React.FC<OperaitionProps & DialogProps> = (props) => {
       try {
         await updateLists(values)
       } catch (err) {
-        console.log(err);
+        logger.info(err);
       }
 
       onOk(values);

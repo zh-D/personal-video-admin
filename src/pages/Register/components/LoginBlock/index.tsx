@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 import { useRequest } from 'ice';
 import userService from '@/services/user';
+import { logger } from 'ice';
 
 const { Item } = Form;
 
@@ -44,7 +45,7 @@ export default function RegisterBlock() {
 
   const handleSubmit = (values: RegisterProps, errors: []) => {
     if (errors) {
-      console.log('errors', errors);
+      logger.info('errors', errors);
       return;
     }
 
