@@ -41,7 +41,7 @@ const LoginBlock: React.FunctionComponent<LoginProps> = (
       Message.error('登录失败');
     } else {
       Message.success('登录成功');
-      history.push('/details/dashboard');
+      history.push('/details/welcome');
     }
 
   };
